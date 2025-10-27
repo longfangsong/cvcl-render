@@ -5,7 +5,7 @@ FROM golang:1.21-alpine AS builder
 WORKDIR /build
 
 # Copy go mod files
-COPY go.mod go.sum ./
+COPY go.mod ./
 RUN go mod download
 
 # Copy source code
@@ -29,7 +29,7 @@ RUN apk add --no-cache \
     ttf-droid && \
     mkdir -p /usr/share/fonts/ttf-roboto /usr/share/fonts/ttf-source-sans-pro && \
     wget -qO- https://github.com/google/fonts/raw/refs/heads/main/ofl/roboto/Roboto%5Bwdth,wght%5D.ttf > /usr/share/fonts/ttf-roboto/Roboto.ttf
-COPY ./SourceSansPro-Regular.otf /usr/share/fonts/ttf-source-sans-pro/SourceSansPro-Regular.otf
+COPY ./font/SourceSansPro-Regular.otf /usr/share/fonts/ttf-source-sans-pro/SourceSansPro-Regular.otf
 RUN fc-cache -fv
 
 # Copy the built binary from builder stage
@@ -44,5 +44,8 @@ WORKDIR /app
 # Expose default port
 EXPOSE 8080
 
+# Set entrypoint to cvcl-render
+ENTRYPOINT ["cvcl-render"]
+
 # Default command - run HTTP server
-CMD ["cvcl-render", "-output-dir", "/output"]
+CMD ["-output-dir", "/output"]
