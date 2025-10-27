@@ -1,0 +1,26 @@
+# Build artifacts
+cvcl-render
+*.typ
+*.pdf
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Testing
+test*.sh
+example*.sh
+
+# Dependencies
+vendor/
+
+# Output directories
+output*/
+cover*/

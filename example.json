@@ -1,0 +1,15 @@
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john.doe@example.com",
+  "homepage": "https://johndoe.com",
+  "phone": "+1-555-0100",
+  "github": "johndoe",
+  "linkedin": "johndoe",
+  "position": "Senior Software Engineer",
+  "addressee": "Hiring Manager",
+  "opening": "I am writing to express my strong interest in the Senior Software Engineer position at your esteemed company.",
+  "about_me": "With over 5 years of experience in full-stack development, I have successfully led multiple projects from conception to deployment. My expertise spans across various technologies and my passion for creating elegant solutions has consistently driven my career forward.",
+  "why_me": "My proven track record of delivering high-quality software, combined with my strong problem-solving skills and ability to work effectively in team environments, makes me an excellent fit for this role.",
+  "why_company": "I am particularly drawn to your company's commitment to innovation and excellence. Your recent projects in the AI/ML space align perfectly with my career aspirations and technical interests."
+}

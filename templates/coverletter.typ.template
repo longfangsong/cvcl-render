@@ -1,0 +1,34 @@
+#import "@preview/modern-cv:0.9.0": *
+
+#show: coverletter.with(
+  author: (
+    firstname: "{{.FirstName}}",
+    lastname: "{{.LastName}}",
+    email: "{{.Email}}",
+    {{if .Homepage}}homepage: "{{.Homepage}}",{{end}}
+    {{if .Phone}}phone: "{{.Phone}}",{{end}}
+    {{if .GitHub}}github: "{{.GitHub}}",{{end}}
+    {{if .LinkedIn}}linkedin: "{{.LinkedIn}}",{{end}}
+    positions: (),
+  ),
+  profile-picture: none,
+  language: "en",
+)
+
+#letter-heading(job-position: "{{ .Position }}", addressee: "{{ .Addressee }}")
+
+#coverletter-content[
+  {{ .Opening }}
+]
+
+#coverletter-content[
+  {{ .AboutMe }}
+]
+
+#coverletter-content[
+  {{ .WhyMe }}
+]
+
+#coverletter-content[
+  {{ .WhyCompany }}
+]
