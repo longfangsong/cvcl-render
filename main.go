@@ -1,169 +1,14 @@
 package main
 
 import (
-	"embed"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strings"
-	"text/template"
 )
-
-//go:embed templates/coverletter.typ.template
-var embeddedTemplates embed.FS
-
-// CoverLetterData represents the data to be rendered in the template
-type CoverLetterData struct {
-	FirstName  string `json:"first_name"`
-	LastName   string `json:"last_name"`
-	Email      string `json:"email"`
-	Homepage   string `json:"homepage,omitempty"`
-	Phone      string `json:"phone,omitempty"`
-	GitHub     string `json:"github,omitempty"`
-	LinkedIn   string `json:"linkedin,omitempty"`
-	Position   string `json:"position"`
-	Addressee  string `json:"addressee"`
-	Opening    string `json:"opening"`
-	AboutMe    string `json:"about_me"`
-	WhyMe      string `json:"why_me"`
-	WhyCompany string `json:"why_company"`
-}
-
-// getTemplateContent reads template from embedded files or filesystem
-func getTemplateContent(templatePath string) (string, error) {
-	// Try to read from embedded templates first
-	if strings.HasSuffix(templatePath, "coverletter.typ.template") || templatePath == "templates/coverletter.typ.template" {
-		data, err := embeddedTemplates.ReadFile("templates/coverletter.typ.template")
-		if err == nil {
-			return string(data), nil
-		}
-	}
-
-	// Fall back to filesystem
-	templateContent, err := os.ReadFile(templatePath)
-	if err != nil {
-		return "", fmt.Errorf("failed to read template file: %w", err)
-	}
-	return string(templateContent), nil
-}
-
-// RenderCoverLetter renders the cover letter template with the provided data
-func RenderCoverLetter(templatePath string, data CoverLetterData) (string, error) {
-	// Read template file (from embedded or filesystem)
-	templateContent, err := getTemplateContent(templatePath)
-	if err != nil {
-		return "", err
-	}
-
-	// Parse template
-	tmpl, err := template.New("coverletter").Parse(templateContent)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse template: %w", err)
-	}
-
-	// Execute template
-	var result strings.Builder
-	err = tmpl.Execute(&result, data)
-	if err != nil {
-		return "", fmt.Errorf("failed to execute template: %w", err)
-	}
-
-	return result.String(), nil
-}
-
-// RenderCoverLetterFromJSON renders the template using JSON data
-func RenderCoverLetterFromJSON(templatePath string, jsonData string) (string, error) {
-	var data CoverLetterData
-	err := json.Unmarshal([]byte(jsonData), &data)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse JSON data: %w", err)
-	}
-
-	return RenderCoverLetter(templatePath, data)
-}
-
-// RenderCoverLetterFromJSONFile renders the template using a JSON file
-func RenderCoverLetterFromJSONFile(templatePath string, jsonFilePath string) (string, error) {
-	jsonContent, err := os.ReadFile(jsonFilePath)
-	if err != nil {
-		return "", fmt.Errorf("failed to read JSON file: %w", err)
-	}
-
-	return RenderCoverLetterFromJSON(templatePath, string(jsonContent))
-}
-
-// CompileTypstToPDF compiles a Typst file to PDF using the typst compile command
-func CompileTypstToPDF(typstFilePath string, pdfOutputPath string) error {
-	cmd := exec.Command("typst", "compile", typstFilePath, pdfOutputPath)
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to compile Typst file: %w", err)
-	}
-	return nil
-}
-
-// RenderAndCompile renders the template and optionally compiles to PDF
-func RenderAndCompile(templatePath string, data CoverLetterData, outputDir string, skipPDF bool) (typstFile string, pdfFile string, err error) {
-	// Render template
-	result, err := RenderCoverLetter(templatePath, data)
-	if err != nil {
-		return "", "", err
-	}
-
-	// Generate output filenames
-	pos := strings.ReplaceAll(data.Position, " ", "_")
-	typstFileName := fmt.Sprintf("Cover_Letter_%s_%s.typ", data.FirstName, pos)
-	pdfFileName := fmt.Sprintf("Cover_Letter_%s_%s.pdf", data.FirstName, pos)
-
-	typstFilePath := filepath.Join(outputDir, typstFileName)
-	pdfFilePath := filepath.Join(outputDir, pdfFileName)
-
-	// Write the rendered Typst file
-	err = os.WriteFile(typstFilePath, []byte(result), 0644)
-	if err != nil {
-		return "", "", fmt.Errorf("failed to write Typst file: %w", err)
-	}
-
-	// Compile to PDF if not skipped
-	if !skipPDF {
-		err = CompileTypstToPDF(typstFilePath, pdfFilePath)
-		if err != nil {
-			return "", "", err
-		}
-	}
-
-	return typstFilePath, pdfFilePath, nil
-}
-
-// RenderRequest is the JSON request body for the render endpoint
-type RenderRequest struct {
-	FirstName  string `json:"first_name"`
-	LastName   string `json:"last_name"`
-	Email      string `json:"email"`
-	Homepage   string `json:"homepage,omitempty"`
-	Phone      string `json:"phone,omitempty"`
-	GitHub     string `json:"github,omitempty"`
-	LinkedIn   string `json:"linkedin,omitempty"`
-	Position   string `json:"position"`
-	Addressee  string `json:"addressee"`
-	Opening    string `json:"opening"`
-	AboutMe    string `json:"about_me"`
-	WhyMe      string `json:"why_me"`
-	WhyCompany string `json:"why_company"`
-}
-
-// RenderResponse is the JSON response for the render endpoint
-type RenderResponse struct {
-	Success   bool   `json:"success"`
-	Message   string `json:"message"`
-	TypstFile string `json:"typst_file,omitempty"`
-	PDFFile   string `json:"pdf_file,omitempty"`
-	Error     string `json:"error,omitempty"`
-}
 
 // handleRender handles the /render POST endpoint
 func handleRender(templatePath string, outputDir string, skipPDF bool) http.HandlerFunc {
@@ -192,8 +37,20 @@ func handleRender(templatePath string, outputDir string, skipPDF bool) http.Hand
 
 		data := CoverLetterData(req)
 
+		// Get template content
+		templateContent, err := getTemplateContent(templatePath)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(RenderResponse{
+				Success: false,
+				Error:   fmt.Sprintf("Failed to read template: %v", err),
+			})
+			return
+		}
+
 		// Render and compile
-		_, pdfFile, err := RenderAndCompile(templatePath, data, outputDir, skipPDF)
+		_, pdfFile, err := RenderAndCompileCoverLetter(templateContent, data, outputDir, skipPDF)
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusInternalServerError)
@@ -233,6 +90,78 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }
 
+// handleRenderResume handles the /render-resume POST endpoint
+func handleRenderResume(templatePath string, outputDir string, skipPDF bool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   "Method not allowed. Please use POST.",
+			})
+			return
+		}
+
+		var data ResumeData
+		err := json.NewDecoder(r.Body).Decode(&data)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   fmt.Sprintf("Invalid JSON: %v", err),
+			})
+			return
+		}
+
+		// Get template content
+		templateContent, err := getResumeTemplateContent(templatePath)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   fmt.Sprintf("Failed to read template: %v", err),
+			})
+			return
+		}
+
+		// Render and compile
+		_, pdfFile, err := RenderAndCompileResume(templateContent, data, outputDir, skipPDF)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   fmt.Sprintf("Rendering failed: %v", err),
+			})
+			return
+		}
+
+		// Return the PDF file
+		pdfContent, err := os.ReadFile(pdfFile)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   fmt.Sprintf("Failed to read PDF file: %v", err),
+			})
+			return
+		}
+
+		// Get filename for Content-Disposition header
+		fileName := filepath.Base(pdfFile)
+
+		w.Header().Set("Content-Type", "application/pdf")
+		w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%q", fileName))
+		w.Header().Set("Content-Length", fmt.Sprintf("%d", len(pdfContent)))
+		w.WriteHeader(http.StatusOK)
+		w.Write(pdfContent)
+	}
+}
+
 func main() {
 	// Define flags
 	templatePath := flag.String("template", "templates/coverletter.typ.template", "Path to the Typst template file")
@@ -256,9 +185,14 @@ func main() {
 
 // runCLI runs the program in CLI mode
 func runCLI(templatePath, outputDir, jsonFile, jsonString string, skipPDF bool) {
-	var result string
 	var data CoverLetterData
 	var err error
+
+	// Get template content
+	templateContent, err := getTemplateContent(templatePath)
+	if err != nil {
+		log.Fatalf("Failed to read template: %v", err)
+	}
 
 	// Parse data based on input
 	if jsonFile != "" {
@@ -266,7 +200,7 @@ func runCLI(templatePath, outputDir, jsonFile, jsonString string, skipPDF bool) 
 		if err != nil {
 			log.Fatalf("Failed to read JSON file: %v", err)
 		}
-		result, err = RenderCoverLetterFromJSON(templatePath, string(jsonContent))
+		_, err = RenderCoverLetterFromJSON(templateContent, string(jsonContent))
 		if err != nil {
 			log.Fatalf("Error rendering template: %v", err)
 		}
@@ -275,7 +209,7 @@ func runCLI(templatePath, outputDir, jsonFile, jsonString string, skipPDF bool) 
 			log.Fatalf("Error parsing JSON data: %v", err)
 		}
 	} else if jsonString != "" {
-		result, err = RenderCoverLetterFromJSON(templatePath, jsonString)
+		_, err = RenderCoverLetterFromJSON(templateContent, jsonString)
 		if err != nil {
 			log.Fatalf("Error rendering template: %v", err)
 		}
@@ -287,28 +221,84 @@ func runCLI(templatePath, outputDir, jsonFile, jsonString string, skipPDF bool) 
 		log.Fatal("Please provide either -data or -json flag with the input data")
 	}
 
-	// Generate output filenames
-	pos := strings.ReplaceAll(data.Position, " ", "_")
-	typstFileName := fmt.Sprintf("Cover_Letter_%s_%s.typ", data.FirstName, pos)
-	pdfFileName := fmt.Sprintf("Cover_Letter_%s_%s.pdf", data.FirstName, pos)
-
-	typstFilePath := filepath.Join(outputDir, typstFileName)
-	pdfFilePath := filepath.Join(outputDir, pdfFileName)
-
-	// Write the rendered Typst file
-	err = os.WriteFile(typstFilePath, []byte(result), 0644)
+	// Render and compile
+	typstFilePath, pdfFilePath, err := RenderAndCompileCoverLetter(templateContent, data, outputDir, skipPDF)
 	if err != nil {
-		log.Fatalf("Failed to write Typst file: %v", err)
+		log.Fatalf("Error rendering/compiling: %v", err)
 	}
+
 	fmt.Printf("Rendered Typst file saved to: %s\n", typstFilePath)
 
-	// Compile to PDF if not skipped
+	// Print PDF path if compiled
 	if !skipPDF {
-		err = CompileTypstToPDF(typstFilePath, pdfFilePath)
-		if err != nil {
-			log.Fatalf("Error compiling PDF: %v", err)
-		}
 		fmt.Printf("PDF compiled successfully: %s\n", pdfFilePath)
+	}
+}
+
+// handleParseResume handles resume parsing requests
+func handleParseResume() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   "Method not allowed. Please use POST.",
+			})
+			return
+		}
+
+		// Read the Typst file path from query parameter or request body
+		var req struct {
+			FilePath string `json:"file_path"`
+		}
+
+		err := json.NewDecoder(r.Body).Decode(&req)
+		if err != nil {
+			req.FilePath = r.URL.Query().Get("file_path")
+		}
+
+		if req.FilePath == "" {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   "Missing required parameter: file_path",
+			})
+			return
+		}
+
+		// Read the Typst file
+		content, err := os.ReadFile(req.FilePath)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   fmt.Sprintf("Failed to read file: %v", err),
+			})
+			return
+		}
+
+		// Parse the resume
+		resume, err := ParseResumeTypst(string(content))
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   fmt.Sprintf("Failed to parse resume: %v", err),
+			})
+			return
+		}
+
+		// Return the parsed resume as JSON
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success": true,
+			"resume":  resume,
+		})
 	}
 }
 
@@ -320,17 +310,25 @@ func runHTTPServer(templatePath, outputDir, port string, skipPDF bool) {
 		log.Fatalf("Failed to create output directory: %v", err)
 	}
 
+	// Resume template path (default to templates/resume.typ.template)
+	resumeTemplatePath := "templates/resume.typ.template"
+
 	// Register HTTP handlers
 	http.HandleFunc("/render", handleRender(templatePath, outputDir, skipPDF))
+	http.HandleFunc("/render-resume", handleRenderResume(resumeTemplatePath, outputDir, skipPDF))
 	http.HandleFunc("/health", handleHealth)
+	http.HandleFunc("/parse-resume", handleParseResume())
 
 	// Start server
 	addr := ":" + port
 	log.Printf("Starting HTTP server on http://localhost:%s", port)
 	log.Printf("Endpoints:")
 	log.Printf("  POST /render - Render cover letter from JSON")
+	log.Printf("  POST /render-resume - Render resume from JSON")
+	log.Printf("  POST /parse-resume - Parse resume from Typst file")
 	log.Printf("  GET /health - Health check")
 	log.Printf("  Template: %s", templatePath)
+	log.Printf("  Resume Template: %s", resumeTemplatePath)
 	log.Printf("  Output directory: %s", outputDir)
 
 	err = http.ListenAndServe(addr, nil)

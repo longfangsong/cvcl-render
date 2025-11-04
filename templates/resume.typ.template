@@ -1,0 +1,93 @@
+#import "@preview/modern-cv:0.9.0": *
+
+#show link: set text(rgb(0, 102, 204))
+
+#show: resume.with(
+  author: (
+    firstname: "Fangsong",
+    lastname: "Long",
+    email: "longfangsong981013@gmail.com",
+    homepage: "https://longfangsong.github.io/en/",
+    phone: "(+46) 76-451 43 68",
+    github: "longfangsong",
+    twitter: "longfangsong",
+    birth: "Oct. 13th, 1998",
+    linkedin: "fangsong-long-2b9b081aa",
+    positions: (
+      {{range .Positions}}"{{.}}",
+      {{end}}
+    ),
+  ),
+  keywords: ("Software Engineer"),
+  description: "Fangsong complete resume",
+  language: "en",
+  colored-headers: true,
+  show-footer: false,
+  show-address-icon: true,
+  paper-size: "us-letter",
+  profile-picture: none,
+  date: datetime.today().display(),
+)
+
+= Summary
+
+{{.Summary}}
+
+= Education
+
+{{range .Education}}#resume-entry(
+  title: [{{.Title}}],
+  location: "{{.Location}}",
+  date: "{{.Date}}",
+  description: [{{.Description}}],
+)
+{{if .Content}}#resume-item[
+  {{.Content}}
+]
+{{end}}
+{{end}}
+
+= Working Experience
+
+{{range .WorkExperience}}#resume-entry(
+  title: "{{.Title}}",
+  location: "{{.Location}}",
+  date: "{{.Date}}",
+  description: [{{.Description}}],
+)
+
+{{if .Content}}#resume-item[
+  {{.Content}}
+]
+{{end}}
+{{end}}
+
+= Projects
+
+{{range .Projects}}#resume-entry(
+  title: [{{.Title}}],{{if .Location}}
+  location: {{if contains .Location "/"}}github-link("{{.Location}}"){{else}}"{{.Location}}"{{end}},{{end}}{{if .Date}}
+  date: "{{.Date}}",{{end}}{{if .Description}}
+  description: "{{.Description}}",{{end}}
+)
+{{if .Content}}#resume-item[
+{{.Content}}
+]
+{{end}}
+{{end}}
+
+= Skills
+
+{{range .Skills}}#resume-skill-item(
+  "{{.Name}}",
+  ({{range .Skills}}{{if .Strong}}strong("{{.Name}}"){{else}}"{{.Name}}"{{end}}, {{end}}),
+)
+
+{{end}}
+= Interests
+
+{{range .Interests}}#resume-skill-item(
+  "{{.Category}}",
+  ([{{.Description}}],),
+)
+{{end}}

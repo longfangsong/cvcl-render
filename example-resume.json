@@ -1,0 +1,428 @@
+        {
+          "positions": [
+            "Software Engineer",
+            "Embedded developer",
+            "Fullstack developer",
+            "Cloud developer",
+            "System software developer"
+          ],
+          "summary": "A software developer with extensive knowledge. Previously worked at #link(\"https://www.pingcap.com/\")[PingCAP, Inc.], a leading database company in China, where I contributed to the development of the transaction subsystem of a DBMS using Rust and Golang. Additionally, I am an active open-source contributor, both creating my own open-source projects, ranging from real-time OS kernels to RISC-V microcontrollers, and participating in the development of large open-source projects such as rust-analyzer and Rust HALs.",
+          "education": [
+            {
+              "title": "#link(\"https://www.chalmers.se/\")[Chalmers University of Technology]",
+              "location": "Göteborg, Sweden",
+              "date": "Aug. 2023 - Aug. 2025",
+              "description": "Master of Software engineering and technology",
+              "content": "Got full grade on courses including:\n- Principles of Concurrent Programming\n- Real time systems\n- Formal methods in software development\n- Quality assurance and testing\n- Language based security\n- Computability"
+            },
+            {
+              "title": "#link(\"https://apply.shu.edu.cn/\")[Shanghai University]",
+              "location": "Shanghai, China",
+              "date": "Sept. 2017 ‑ Aug. 2021",
+              "description": "Bachelor of computer science and  engineering",
+              "content": "- Technical director of #link(\"https://shuosc.github.io/\")[Shanghai University Open Source Community]. Lead the community to develop several projects ranged from internal information platform to outsourcing projects from other departments of the university.\n- Works for the University’s Information Technology Office. Rewrite and maintain the OAuth system of the university."
+            },
+            {
+              "title": "Self Study and Online Courses",
+              "description": "Taking notes on my #link(\"https://longfangsong.github.io/en/\")[Blog]",
+              "content": "- Teaching myself compiler techniques, mathematical logic, automata theory, type theory, physics of semiconductors, and many other things."
+            }
+          ],
+          "work_experience": [
+            {
+              "title": "Software Engineer",
+              "location": "Shanghai, China",
+              "date": "Jun. 2020 ‑ Sept. 2021 (Intern) , Sept. 2021 ‑ Sept 2022",
+              "description": "#link(\"https://www.pingcap.com/\")[PingCAP, Inc.]",
+              "content": "- Take part in developing #link(\"https://www.pingcap.com/\")[TiDB] \u0026 #link(\"https://tikv.org/\")[TiKV], one of the most successful distributed databases around the world, focus mainly on the transaction part, worked with Golang and Rust.\n- Design, develop, and test the feature #link(\"https://docs.pingcap.com/tidb/dev/troubleshoot-lock-conflicts\")[Lock View]. Help the user and the support engineer troubleshoot lock issues in the database system.\n- Refactor TiKV’s transaction #link(\"https://github.com/tikv/tikv/blob/571b5a263c7e84c2ab8aeb5feaebc8d50cae48cb/src/storage/txn/commands/mod.rs#%23L72\")[command system] with macro. Increase the readability and maintainability of the code.\n- Develop #link(\"https://longfangsong.github.io/tipedia/en/index.html\")[Tipedia], an unofficial knowledge base for helping developers to look for unfamiliar concepts in the system."
+            },
+            {
+              "title": "Software Engineer",
+              "location": "Shanghai, China",
+              "date": "Jun. 2018 ‑ Sept. 2018",
+              "description": "#link(\"https://www.synyi.com/\")[SYNYI AI, Inc.]",
+              "content": "- Working on developing infrastructure for AI assisted medical diagnosis.\n- Develop #link(\"https://github.com/synyi/poplar\")[Poplar], a high performance, web based open source annotation library for natural language processing needs.\nIncrease the first paint performance by 10x. Now this library is used by not only the company itself but also some other leading AI medical health companies in China including Alihealth."
+            }
+          ],
+          "projects": [
+            {
+              "title": "Extending RISC‑V ISA to Optimize Convolution Operation in AIoT Scenery",
+              "date": "Jan. - May 2021",
+              "description": "Bachelor Graduation Project",
+              "content": "- Benchmark space and time consumption of a simple convolution operation on a RISC-V CPU using different instruction set architecture module combinations in the #link(\"https://www.gem5.org/\")[gem5] simulator.\n- Design a custom ISA module for convolution operation.\n- Extend RISC‑V GNU Compiler Toolchain to generate binary code which uses the new commands.\n- Extend gem5 simulator to simulate and benchmark the result binary.\n- Binary size decreased by around 50%, performance increased by a factor of 10 when using the new commands to implement convolution."
+            },
+            {
+              "title": "SHU RISC‑V suite",
+              "date": "Sept. 2020 - Now",
+              "description": "A RISC‑V MCU and compiling toolchain designed for it",
+              "content": "- #link(\"https://github.com/shuosc/shuorv\")[shuorv]. A simple RISC‑V MCU implementation in chisel, supports RV32I and basic interrupt handling, basic support of GPIO and Serial. Can boot FreeRTOS.\n- #link(\"https://github.com/shuosc/come\")[Come]. A toy C like language and it’s compiler tool chain, include a frontend, an optimizer, a RISC-V backend, a wasm backend, a RISC-V assembler and linker.\n- We can compile a simple program written in Come to RISC‑V asm and binary code, and run it on shuorv."
+            },
+            {
+              "title": "A toy smart watch",
+              "location": "longfangsong/watch",
+              "date": "2021 - 2023",
+              "content": "- Design and assemble a PCB'A integrating an MCU, Wi-Fi module, LCD screen, magnetometer, and a pulse oximeter \u0026 heart rate sensor.\n- Develope firmware in Rust, implementing features such as pulse monitoring and a pedometer.\n- Achieve 20 FPS 240x320 video playback on a low-frequency MCU (STM32F103, which max frequency is 72MHz)."
+            },
+            {
+              "title": "#link(\"https://lassvenska.pages.dev/\")[Läss]",
+              "location": "longfangsong/lass",
+              "date": "May 2024 - Present",
+              "description": "A swedish learning platform",
+              "content": "- A Swedish learning platform built around articles from #link(\"https://sverigesradio.se/radioswedenpalattsvenska\")[Radio Sweden på lätt svenska]. It allows users to read articles, click on unfamiliar words, and save them to a personal wordbook for review.\n- Leverages generative AI to explain word meanings and automatically create vocabulary and grammar exercises.\n- A local-first Progressive Web App (PWA) developed with Next.js and deployed on #link(\"https://www.cloudflare.com/\")[Cloudflare]. Utilizes Google Gemini as the LLM provider, taking full advantage of edge computing and serverless architecture for *zero* operating costs.\n- Well received and actively used by my SFI classmates."
+            },
+            {
+              "title": "SHUHelper",
+              "location": "shuosc/shuhelper",
+              "date": "Sep. 2019 - Dec. 2022",
+              "description": "An information service platform for university students",
+              "content": "- Supports displaying school calendar, remind the student when and which classroom they should go for next class, record assignments, etc.\n- Use micro services architect. Deployed on a cloud Kubernetes cluster.\n- Widely used among students."
+            },
+            {
+              "title": "#link(\"https://github.com/SHUReeducation/autoAPI/wiki\")[autoAPI]",
+              "location": "SHUReeducation/autoAPI",
+              "date": "Jun. 2021 - Dec. 2022",
+              "description": "A low‑code CRUD API generating tool",
+              "content": "- Read configure from configure file, SQL migrating file and/or meta tables in MySQL or PostgreSQL\n- Generating a standardized Golang RESTful micro service, which is ready to build with Docker and deployed with Kubernetes."
+            },
+            {
+              "title": "And more ...",
+              "description": "Experimental projects",
+              "content": "- Real time operating system kernel for embedded systems in #link(\"https://github.com/longfangsong/stm32-os\")[C] and #link(\"https://github.com/longfangsong/rs-rtt\")[Rust]\n- #link(\"https://github.com/shuosc/HPermission\")[A high performance authentication gateway]\n- #link(\"https://github.com/longfangsong/tcpjunk\")[A TCP package sniffer]\n- Even more on my #link(\"https://github.com/longfangsong/\")[GitHub]"
+            }
+          ],
+          "skills": [
+            {
+              "name": "Languages",
+              "skills": [
+                {
+                  "name": "C/C++",
+                  "strong": true
+                },
+                {
+                  "name": "Javascript/Typescript",
+                  "strong": true
+                },
+                {
+                  "name": "Golang",
+                  "strong": true
+                },
+                {
+                  "name": "Rust",
+                  "strong": true
+                },
+                {
+                  "name": "Python",
+                  "strong": true
+                },
+                {
+                  "name": "Assembly (RISC-V \u0026 ARMv7)",
+                  "strong": false
+                },
+                {
+                  "name": "Verilog",
+                  "strong": false
+                },
+                {
+                  "name": "C#",
+                  "strong": false
+                },
+                {
+                  "name": "Erlang",
+                  "strong": false
+                },
+                {
+                  "name": "Scala (Chisel DSL)",
+                  "strong": false
+                },
+                {
+                  "name": "SQL",
+                  "strong": false
+                },
+                {
+                  "name": "HTML",
+                  "strong": false
+                },
+                {
+                  "name": "CSS",
+                  "strong": false
+                },
+                {
+                  "name": "WASM",
+                  "strong": false
+                },
+                {
+                  "name": "Kotlin",
+                  "strong": false
+                },
+                {
+                  "name": "Lua",
+                  "strong": false
+                },
+                {
+                  "name": "GDScript",
+                  "strong": false
+                },
+                {
+                  "name": "Erlang",
+                  "strong": false
+                },
+                {
+                  "name": "Frontend",
+                  "strong": false
+                },
+                {
+                  "name": "React",
+                  "strong": true
+                },
+                {
+                  "name": "Next.js",
+                  "strong": true
+                },
+                {
+                  "name": "TailwindCSS",
+                  "strong": true
+                },
+                {
+                  "name": "shadcn/ui",
+                  "strong": true
+                },
+                {
+                  "name": "Vue",
+                  "strong": true
+                },
+                {
+                  "name": "Angular",
+                  "strong": true
+                },
+                {
+                  "name": "Svelte",
+                  "strong": false
+                },
+                {
+                  "name": "Backend",
+                  "strong": false
+                },
+                {
+                  "name": "Django",
+                  "strong": true
+                },
+                {
+                  "name": "fastapi",
+                  "strong": true
+                },
+                {
+                  "name": "Gin",
+                  "strong": true
+                },
+                {
+                  "name": "axum",
+                  "strong": false
+                },
+                {
+                  "name": "beego",
+                  "strong": false
+                },
+                {
+                  "name": "actix",
+                  "strong": false
+                },
+                {
+                  "name": "Databases",
+                  "strong": false
+                },
+                {
+                  "name": "PostgreSQL (Neon/On-premises)",
+                  "strong": true
+                },
+                {
+                  "name": "MySQL",
+                  "strong": true
+                },
+                {
+                  "name": "SQLite",
+                  "strong": true
+                },
+                {
+                  "name": "Redis",
+                  "strong": true
+                },
+                {
+                  "name": "MongoDB",
+                  "strong": false
+                }
+              ]
+            },
+            {
+              "name": "Cloud Platforms",
+              "skills": [
+                {
+                  "name": "Cloudflare",
+                  "strong": false
+                },
+                {
+                  "name": "AWS",
+                  "strong": false
+                },
+                {
+                  "name": "Azure",
+                  "strong": false
+                },
+                {
+                  "name": "Google Cloud Platform",
+                  "strong": false
+                },
+                {
+                  "name": "Vercel",
+                  "strong": false
+                },
+                {
+                  "name": "Supabase",
+                  "strong": false
+                }
+              ]
+            },
+            {
+              "name": "Dev Ops",
+              "skills": [
+                {
+                  "name": "Kubernetes",
+                  "strong": false
+                },
+                {
+                  "name": "GitHub Actions",
+                  "strong": false
+                },
+                {
+                  "name": "ArgoCD",
+                  "strong": false
+                },
+                {
+                  "name": "GitLab CI/CD",
+                  "strong": false
+                },
+                {
+                  "name": "Docker",
+                  "strong": false
+                },
+                {
+                  "name": "Terraform",
+                  "strong": false
+                },
+                {
+                  "name": "Ansible",
+                  "strong": false
+                }
+              ]
+            },
+            {
+              "name": "AI/ML library",
+              "skills": [
+                {
+                  "name": "Pytorch",
+                  "strong": false
+                },
+                {
+                  "name": "OpenCV",
+                  "strong": false
+                }
+              ]
+            },
+            {
+              "name": "LLM related",
+              "skills": [
+                {
+                  "name": "ollama",
+                  "strong": false
+                },
+                {
+                  "name": "LangChain",
+                  "strong": false
+                },
+                {
+                  "name": "n8n",
+                  "strong": false
+                }
+              ]
+            },
+            {
+              "name": "Misc",
+              "skills": [
+                {
+                  "name": "Linux",
+                  "strong": false
+                },
+                {
+                  "name": "Shell",
+                  "strong": false
+                },
+                {
+                  "name": "Git",
+                  "strong": false
+                },
+                {
+                  "name": "PCB Design",
+                  "strong": false
+                },
+                {
+                  "name": "3D modeling",
+                  "strong": false
+                },
+                {
+                  "name": "3D printing",
+                  "strong": false
+                },
+                {
+                  "name": "SEO",
+                  "strong": false
+                },
+                {
+                  "name": "Prometheus",
+                  "strong": false
+                },
+                {
+                  "name": "Grafana",
+                  "strong": false
+                },
+                {
+                  "name": "Agile",
+                  "strong": false
+                },
+                {
+                  "name": "TDD",
+                  "strong": false
+                },
+                {
+                  "name": "Domain-Driven Design",
+                  "strong": false
+                }
+              ]
+            },
+            {
+              "name": "Spoken Languages",
+              "skills": [
+                {
+                  "name": "Chinese",
+                  "strong": true
+                },
+                {
+                  "name": "English",
+                  "strong": true
+                },
+                {
+                  "name": "Svenska (B1+, SFI nivå D)",
+                  "strong": true
+                },
+                {
+                  "name": "Einfaches Deutsch (A2)",
+                  "strong": false
+                }
+              ]
+            }
+          ],
+          "interests": [
+            {
+              "category": "Electronic DIY",
+              "description": "I have built projects like automatic light, solar powered power bank, e‑paper reader, etc."
+            }
+          ]
+        }
