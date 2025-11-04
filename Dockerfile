@@ -36,7 +36,7 @@ RUN apk add --no-cache \
     ttf-droid && \
     mkdir -p /usr/share/fonts/ttf-roboto /usr/share/fonts/ttf-source-sans-pro && \
     wget -qO- https://github.com/google/fonts/raw/refs/heads/main/ofl/roboto/Roboto%5Bwdth,wght%5D.ttf > /usr/share/fonts/ttf-roboto/Roboto.ttf
-COPY ./font/SourceSansPro-Regular.otf /usr/share/fonts/ttf-source-sans-pro/SourceSansPro-Regular.otf
+COPY ./font/ /usr/share/fonts/ttf-source-sans-pro/
 RUN fc-cache -fv && mkdir -p /root/.local/share/typst/packages/local/modern-cv/0.9.0
 
 # Copy the built binary from builder stage
