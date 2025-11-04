@@ -35,12 +35,12 @@ RUN apk add --no-cache \
     ttf-droid \
     unzip && \
     mkdir -p /usr/share/fonts/ttf-roboto /usr/share/fonts/ttf-source-sans-pro /usr/share/fonts/ttf-font-awesome && \
-    wget -qO- https://github.com/google/fonts/raw/refs/heads/main/ofl/roboto/Roboto%5Bwdth,wght%5D.ttf > /usr/share/fonts/ttf-roboto/Roboto.ttf && \
     wget -qO /tmp/fontawesome.zip https://use.fontawesome.com/releases/v7.1.0/fontawesome-free-7.1.0-desktop.zip && \
     unzip -q /tmp/fontawesome.zip -d /tmp && \
     cp -r /tmp/fontawesome-free-7.1.0-desktop/otfs/*.otf /usr/share/fonts/ttf-font-awesome/ && \
     rm -rf /tmp/fontawesome.zip /tmp/fontawesome-free-7.1.0-desktop
-COPY ./font/ /usr/share/fonts/ttf-source-sans-pro/
+COPY ./font/SourceSansPro/ /usr/share/fonts/ttf-source-sans-pro/
+COPY ./font/Roboto/ /usr/share/fonts/ttf-roboto/
 RUN fc-cache -fv && mkdir -p /root/.local/share/typst/packages/local/modern-cv/0.9.0
 
 # Copy the built binary from builder stage

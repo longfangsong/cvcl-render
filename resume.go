@@ -385,29 +385,66 @@ func parseInterests(content string) []InterestItem {
 
 	interestsContent := content[startIdx:]
 
-	// Find all resume-skill-item blocks in the interests section
-	skillItemPattern := regexp.MustCompile(`#resume-skill-item\(\s*"([^"]*)"\s*,\s*\(\[(.*?)\],?\)\s*\)`)
-	skillMatches := skillItemPattern.FindAllStringSubmatch(interestsContent, -1)
+	// Parse resume-skill-item blocks manually to handle multi-line content properly
+	pos := 0
+	for pos < len(interestsContent) {
+		// Look for #resume-skill-item(
+		itemMarker := "#resume-skill-item("
+		itemIdx := strings.Index(interestsContent[pos:], itemMarker)
+		if itemIdx == -1 {
+			break
+		}
+		itemIdx += pos
 
-	for _, skillMatch := range skillMatches {
-		if len(skillMatch) < 3 {
+		// Find the category name (first quoted string)
+		categoryStart := strings.Index(interestsContent[itemIdx+len(itemMarker):], "\"")
+		if categoryStart == -1 {
+			pos = itemIdx + len(itemMarker)
 			continue
 		}
+		categoryStart += itemIdx + len(itemMarker)
 
-		category := skillMatch[1]
-		descriptionRaw := skillMatch[2]
+		categoryEnd := strings.Index(interestsContent[categoryStart+1:], "\"")
+		if categoryEnd == -1 {
+			pos = itemIdx + len(itemMarker)
+			continue
+		}
+		categoryEnd += categoryStart + 1
 
-		// Clean up the description
-		description := strings.TrimSpace(descriptionRaw)
+		category := interestsContent[categoryStart+1 : categoryEnd]
 
-		interests = append(interests, InterestItem{
-			Category:    category,
-			Description: description,
-		})
+		// Find the next #resume-skill-item( or end of file
+		nextItemIdx := strings.Index(interestsContent[itemIdx+len(itemMarker):], itemMarker)
+		var blockEndIdx int
+		if nextItemIdx == -1 {
+			blockEndIdx = len(interestsContent)
+		} else {
+			blockEndIdx = itemIdx + len(itemMarker) + nextItemIdx
+		}
+
+		// Extract the block content
+		blockContent := interestsContent[itemIdx:blockEndIdx]
+
+		// Find the opening and closing brackets [ ... ]
+		descStart := strings.Index(blockContent, "[")
+		descEnd := strings.LastIndex(blockContent, "]")
+		if descStart != -1 && descEnd != -1 && descEnd > descStart {
+			descriptionRaw := blockContent[descStart+1 : descEnd]
+			description := strings.TrimSpace(descriptionRaw)
+
+			interests = append(interests, InterestItem{
+				Category:    category,
+				Description: description,
+			})
+		}
+
+		pos = blockEndIdx
 	}
 
 	return interests
 }
+
+// Author represents the author information for the resume
 
 // Author represents the author information for the resume
 type Author struct {
