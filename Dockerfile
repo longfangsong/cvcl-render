@@ -29,13 +29,17 @@ RUN apk add --no-cache \
     font-noto \
     font-noto-cjk \
     font-noto-extra \
-    ttf-font-awesome \
     ttf-dejavu \
     ttf-freefont \
     ttf-liberation \
-    ttf-droid && \
-    mkdir -p /usr/share/fonts/ttf-roboto /usr/share/fonts/ttf-source-sans-pro && \
-    wget -qO- https://github.com/google/fonts/raw/refs/heads/main/ofl/roboto/Roboto%5Bwdth,wght%5D.ttf > /usr/share/fonts/ttf-roboto/Roboto.ttf
+    ttf-droid \
+    unzip && \
+    mkdir -p /usr/share/fonts/ttf-roboto /usr/share/fonts/ttf-source-sans-pro /usr/share/fonts/ttf-font-awesome && \
+    wget -qO- https://github.com/google/fonts/raw/refs/heads/main/ofl/roboto/Roboto%5Bwdth,wght%5D.ttf > /usr/share/fonts/ttf-roboto/Roboto.ttf && \
+    wget -qO /tmp/fontawesome.zip https://use.fontawesome.com/releases/v7.1.0/fontawesome-free-7.1.0-desktop.zip && \
+    unzip -q /tmp/fontawesome.zip -d /tmp && \
+    cp -r /tmp/fontawesome-free-7.1.0-desktop/otfs/*.otf /usr/share/fonts/ttf-font-awesome/ && \
+    rm -rf /tmp/fontawesome.zip /tmp/fontawesome-free-7.1.0-desktop
 COPY ./font/ /usr/share/fonts/ttf-source-sans-pro/
 RUN fc-cache -fv && mkdir -p /root/.local/share/typst/packages/local/modern-cv/0.9.0
 
