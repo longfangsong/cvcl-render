@@ -117,7 +117,9 @@ func RenderCoverLetterFromJSONFile(templateContent string, jsonFilePath string) 
 // CompileTypstToPDF compiles a Typst file to PDF using the typst compile command
 func CompileTypstToPDF(typstFilePath string, pdfOutputPath string) error {
 	cmd := exec.Command("typst", "compile", typstFilePath, pdfOutputPath)
-	if err := cmd.Run(); err != nil {
+	stdoutStderr, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("typst compile failed: %s\nOutput:\n%s\n", err, string(stdoutStderr))
 		return fmt.Errorf("failed to compile Typst file: %w", err)
 	}
 	return nil
